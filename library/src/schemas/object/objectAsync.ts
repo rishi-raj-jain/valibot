@@ -9,7 +9,7 @@ import type {
   ObjectPathItem,
   OutputDataset,
 } from '../../types/index.ts';
-import { _addIssue, _getStandardProps } from '../../utils/index.ts';
+import { _addIssue, _addStandardProp } from '../../utils/index.ts';
 import type { object } from './object.ts';
 import type { ObjectIssue } from './types.ts';
 
@@ -88,7 +88,9 @@ export function objectAsync(
   ObjectEntriesAsync,
   ErrorMessage<ObjectIssue> | undefined
 > {
-  return {
+  return _addStandardProp<
+    ObjectSchemaAsync<ObjectEntriesAsync, ErrorMessage<ObjectIssue> | undefined>
+  >({
     kind: 'schema',
     type: 'object',
     reference: objectAsync,
@@ -96,10 +98,14 @@ export function objectAsync(
     async: true,
     entries,
     message,
-    get '~standard'() {
-      return _getStandardProps(this);
-    },
-    async '~run'(dataset, config) {
+    async '~run'(
+      this: ObjectSchemaAsync<
+        ObjectEntriesAsync,
+        ErrorMessage<ObjectIssue> | undefined
+      >,
+      dataset,
+      config
+    ) {
       // Get input value from dataset
       const input = dataset.value;
 
@@ -237,5 +243,5 @@ export function objectAsync(
         ObjectIssue | InferObjectIssue<ObjectEntriesAsync>
       >;
     },
-  };
+  });
 }

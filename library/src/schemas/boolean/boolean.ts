@@ -4,7 +4,7 @@ import type {
   ErrorMessage,
   OutputDataset,
 } from '../../types/index.ts';
-import { _addIssue, _getStandardProps } from '../../utils/index.ts';
+import { _addIssue, _addStandardProp } from '../../utils/index.ts';
 
 /**
  * Boolean issue interface.
@@ -70,17 +70,20 @@ export function boolean<
 export function boolean(
   message?: ErrorMessage<BooleanIssue>
 ): BooleanSchema<ErrorMessage<BooleanIssue> | undefined> {
-  return {
+  return _addStandardProp<
+    BooleanSchema<ErrorMessage<BooleanIssue> | undefined>
+  >({
     kind: 'schema',
     type: 'boolean',
     reference: boolean,
     expects: 'boolean',
     async: false,
     message,
-    get '~standard'() {
-      return _getStandardProps(this);
-    },
-    '~run'(dataset, config) {
+    '~run'(
+      this: BooleanSchema<ErrorMessage<BooleanIssue> | undefined>,
+      dataset,
+      config
+    ) {
       if (typeof dataset.value === 'boolean') {
         // @ts-expect-error
         dataset.typed = true;
@@ -90,5 +93,5 @@ export function boolean(
       // @ts-expect-error
       return dataset as OutputDataset<boolean, BooleanIssue>;
     },
-  };
+  });
 }

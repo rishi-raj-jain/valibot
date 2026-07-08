@@ -4,7 +4,7 @@ import type {
   ErrorMessage,
   OutputDataset,
 } from '../../types/index.ts';
-import { _addIssue, _getStandardProps } from '../../utils/index.ts';
+import { _addIssue, _addStandardProp } from '../../utils/index.ts';
 
 /**
  * Promise issue interface.
@@ -70,17 +70,20 @@ export function promise<
 export function promise(
   message?: ErrorMessage<PromiseIssue>
 ): PromiseSchema<ErrorMessage<PromiseIssue> | undefined> {
-  return {
+  return _addStandardProp<
+    PromiseSchema<ErrorMessage<PromiseIssue> | undefined>
+  >({
     kind: 'schema',
     type: 'promise',
     reference: promise,
     expects: 'Promise',
     async: false,
     message,
-    get '~standard'() {
-      return _getStandardProps(this);
-    },
-    '~run'(dataset, config) {
+    '~run'(
+      this: PromiseSchema<ErrorMessage<PromiseIssue> | undefined>,
+      dataset,
+      config
+    ) {
       if (dataset.value instanceof Promise) {
         // @ts-expect-error
         dataset.typed = true;
@@ -90,5 +93,5 @@ export function promise(
       // @ts-expect-error
       return dataset as OutputDataset<Promise<unknown>, PromiseIssue>;
     },
-  };
+  });
 }

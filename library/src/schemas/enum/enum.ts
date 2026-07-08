@@ -6,7 +6,7 @@ import type {
 } from '../../types/index.ts';
 import {
   _addIssue,
-  _getStandardProps,
+  _addStandardProp,
   _joinExpects,
   _stringify,
 } from '../../utils/index.ts';
@@ -131,7 +131,9 @@ export function enum_(
       options.push(enum__[key]);
     }
   }
-  return {
+  return _addStandardProp<
+    EnumSchema<Enum, ErrorMessage<EnumIssue> | undefined>
+  >({
     kind: 'schema',
     type: 'enum',
     reference: enum_,
@@ -140,10 +142,11 @@ export function enum_(
     enum: enum__,
     options,
     message,
-    get '~standard'() {
-      return _getStandardProps(this);
-    },
-    '~run'(dataset, config) {
+    '~run'(
+      this: EnumSchema<Enum, ErrorMessage<EnumIssue> | undefined>,
+      dataset,
+      config
+    ) {
       // @ts-expect-error
       if (this.options.includes(dataset.value)) {
         // @ts-expect-error
@@ -154,7 +157,7 @@ export function enum_(
       // @ts-expect-error
       return dataset as OutputDataset<string | number, EnumIssue>;
     },
-  };
+  });
 }
 
 export { enum_ as enum };

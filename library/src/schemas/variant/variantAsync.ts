@@ -9,7 +9,7 @@ import type {
 } from '../../types/index.ts';
 import {
   _addIssue,
-  _getStandardProps,
+  _addStandardProp,
   _joinExpects,
 } from '../../utils/index.ts';
 import type {
@@ -101,7 +101,13 @@ export function variantAsync(
   VariantOptionsAsync<string>,
   ErrorMessage<VariantIssue> | undefined
 > {
-  return {
+  return _addStandardProp<
+    VariantSchemaAsync<
+      string,
+      VariantOptionsAsync<string>,
+      ErrorMessage<VariantIssue> | undefined
+    >
+  >({
     kind: 'schema',
     type: 'variant',
     reference: variantAsync,
@@ -110,10 +116,15 @@ export function variantAsync(
     key,
     options,
     message,
-    get '~standard'() {
-      return _getStandardProps(this);
-    },
-    async '~run'(dataset, config) {
+    async '~run'(
+      this: VariantSchemaAsync<
+        string,
+        VariantOptionsAsync<string>,
+        ErrorMessage<VariantIssue> | undefined
+      >,
+      dataset,
+      config
+    ) {
       // Get input value from dataset
       const input = dataset.value;
 
@@ -264,5 +275,5 @@ export function variantAsync(
         VariantIssue | BaseIssue<unknown>
       >;
     },
-  };
+  });
 }
