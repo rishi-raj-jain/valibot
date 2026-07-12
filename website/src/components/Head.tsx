@@ -82,16 +82,14 @@ export const Head = component$(() => {
 
       {/* Preload fonts */}
       {fontPreloads.map(({ href, type }) => (
-        {fontPreloads.map(({ href, type }) => (
-          <link
-            key={href}
-            rel="preload"
-            href={href}
-            as="font"
-            type={type}
-            crossOrigin="anonymous"
-          />
-        ))}
+        <link
+          key={href}
+          rel="preload"
+          href={href}
+          as="font"
+          type={type}
+          crossOrigin="anonymous"
+        />
       ))}
 
       {/* Font faces and the metric-matched fallbacks that keep the swap shift-free */}
